@@ -62,9 +62,8 @@ def parseFile(fileName):
 	inputfile = open(fileName)
 	for line in inputfile:
 		nbr = getNumber(line)
-		if len(nbr) < 3:
-			sys.stdout.write(line.rstrip('\n') + "=>")
-			print(nbr)
+		if len(nbr) <= 3:
+			sys.stdout.write(line.rstrip('\n') + "=>" + nbr)
 	return 1
 		
 if __name__ == "__main__":
