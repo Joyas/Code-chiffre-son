@@ -8,7 +8,7 @@ lastTenWords = []
 numbersAndSounds = [
   ("0", ["ss", "s", "z", "ce", "ci", "cy"]), 
   ("1", ["tt", "d", "t"]), 
-  ("2", ["n", "nn"]), 
+  ("2", ["nn", "n"]), 
   ("3", ["mm", "m"]), 
   ("4", ["rr", "r"]), 
   ("5", ["ll", "l"]), 
@@ -22,8 +22,12 @@ numbersAndSounds = [
 def isMute(word, idx, sound):
   indexSound = word.find(sound, idx)
   muteConsonne = "tsnzmx"
-  if (indexSound + len(sound) + 1) >= len(word) and muteConsonne.find(sound) >= 0:
+  muteSounds = ["en", "an", "on", "ent"]  
+  if (indexSound + len(sound) + 1) >= len(word) - 1 and muteConsonne.find(sound) >= 0:
     return True
+  for muteSound in muteSounds:
+    if word.find(muteSound, idx - 1) >= 0 and muteSound.find(sound) >= 0 and (idx - 1 + len(muteSound)) == len(word):
+      return True
   return False
   
 def getFigure(word, idx):
@@ -67,18 +71,31 @@ def hasManySameCharacter(word1, word2):
     if c == word2[i]:
       same = same + 1
     i = i + 1
-  if same != 0 and len(word1) / same > 0.8:
+  print
+  print("---------------------")
+  print(word1)
+  print(word2)
+  print(same)    
+  if same != 0 and len(word2) / same > 0.5:
+    print("True")
+    print("---------------------")
+    print
     return True
+  print("False")
+  print("---------------------")
+  print
   return False 
   
 def isDuplicate(newWord):
   word = ""
-  if len(lastTenWords) == 10:
+  if len(lastTenWords) == 100:
     word = lastTenWords.pop(0)
     numberOfWord = getNumber(word)
     for idx, oldWord in enumerate(lastTenWords):
       numberOfOldWord = getNumber(oldWord)
       if numberOfWord == numberOfOldWord and hasManySameCharacter(word, oldWord) == True:
+        if oldWord.endswith("er") == True:
+          word = oldWord
         lastTenWords.pop(idx)
   lastTenWords.append(newWord)
   return word
@@ -86,9 +103,9 @@ def isDuplicate(newWord):
 def parseFile(fileName):
   inputfile = open(fileName)
   for line in inputfile:
-    word = isDuplicate(line)
+    word = isDuplicate(line.rstrip('\n'))
     if word != "":
-      print(word.rstrip('\n'))
+      print(word.rstrip('\n') + getNumber(word))
   return 1
     
 if __name__ == "__main__":
