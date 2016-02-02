@@ -26,32 +26,34 @@ def isDuplicate(newWord):
   if len(lastTenWords) == 100 or newWord == "":
     word = lastTenWords.pop(0)[0]
     numberOfWord = CodeChiffreSonFromWord.getNumber(word)
+    if not numberOfWord:
+      return ""
     for idx, oldWord in enumerate(lastTenWords):
       numberOfOldWord = CodeChiffreSonFromWord.getNumber(oldWord[0])
-      if numberOfWord == numberOfOldWord and hasManySameCharacter(word, oldWord[0]) == True:
+      if int(numberOfWord) == int(numberOfOldWord) and hasManySameCharacter(word, oldWord[0]) == True:
         if oldWord[0].endswith("er") == True:
           word = oldWord[0]
         lastTenWords[idx] = (lastTenWords[idx][0], True)
-    i=0
+    i = 0
     while i < len(lastTenWords):
       if lastTenWords[i][1] == True:
         lastTenWords.pop(i)
       else:
-        i+=1
-  if newWord != "":
+        i += 1
+  if CodeChiffreSonFromWord.getNumber(newWord) != "":
     lastTenWords.append((newWord, False))
   return word
   
 def parseFile(fileName):
   inputfile = open(fileName)
   for line in inputfile:
-    word = isDuplicate(line.rstrip('\n'))
+    word = isDuplicate(line.rstrip('\n').replace(" ", ""))
     if word != "":
-      print(word.rstrip('\n') + " -> " + CodeChiffreSonFromWord.getNumber(word))
+      print(word + " -> " + CodeChiffreSonFromWord.getNumber(word))
   while len(lastTenWords) != 0:
     word = isDuplicate("")
     if word != "":
-      print(word.rstrip('\n') + " -> " + CodeChiffreSonFromWord.getNumber(word))
+      print(word + " -> " + CodeChiffreSonFromWord.getNumber(word))
   return 1
     
 if __name__ == "__main__":
